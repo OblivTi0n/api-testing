@@ -238,7 +238,6 @@
 // app.listen(8081, () => {
 //     console.log('Server is running on port 8081');
 // });
-require('dotenv').config();
 const express = require('express');
 const axios = require('axios');
 const bodyParser = require('body-parser');
