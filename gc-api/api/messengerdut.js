@@ -241,6 +241,8 @@
 const express = require('express');
 const axios = require('axios');
 const bodyParser = require('body-parser');
+const http = require('http');
+const ngrok = require('@ngrok/ngrok');
 
 const app = express();
 app.use(bodyParser.json());
@@ -248,7 +250,7 @@ app.use(bodyParser.json());
 const VERIFY_TOKEN = "1234";
 // const PAGE_ACCESS_TOKEN = 'EAAKe6JxLoNgBO8qOlhu2T4CZAlxfSHJBFi8Pb0NdG5z7ZC2rEb7FPw6afBBphuYPcZCcbPgal49U2qOffzi8q9djo2K5kgqFnaVJK5PgxcxjmH5ZC6YkGAaXBNADvgVQy1aCzfSwpYNuXEACXJQfH4Bh9nidmqMAuMrwCGFmdWE1UU1XOmNX3i3jXww5K18vYMwcN4ZAVNAVkoZBXw';
 // const PAGE_ACCESS_TOKEN = 'EAAKe6JxLoNgBO8ica9doArYmM3mZAVK7apIe9OVzhLI1PVVndaOIOL6nJfaVhc6kykUnNjiXAnSZAUdpJRB8n9nqQtR1hnlvFkojP2LBhCsvCJZA4C9eBcKcDI1f8ZCdPjExE6S9SK3oNgs4Mz1mWAQkZBD6WerW0GKWWZCZCGHXZBRFLVeIbtUPJZCAWHfGb4Vu4ZBwDIAQj0TenPX0twkalj6yduXxqzZBK0ZD';
-const PAGE_ACCESS_TOKEN = 'EAAKe6JxLoNgBO9PGG1P2vIGvroNgUIs64hLs1rZAESDF6CMUdIjvEe33zVZAb2DvbOFOcSuuuOPu4XcZBXpwtYLFS4gwpVpHGoFJl2HvZBDPlODincPQ7tZA6o8qwh2PaeOeUWGBYDWWmOhuuOZCZBfp6nF5YKAdKRBfWrU404jRDq5AIMh3wOEszXMnkMZBXsIsaiA43Jep\n';
+const PAGE_ACCESS_TOKEN = 'EAAKe6JxLoNgBO3K13stNPlEVmEULYYMnfoGrnbMqwRQhTJ6QqC3Ttj5lCO5yIqwEalVSzUpZBfCqwe2fUXKGkGk5TCiZCdtIJ0AZB6PZAJQ7AWCId6FvLtHdlu5XMt5TE2oz5eIVaxF1jJGSw353OB4DDZAZA9cmMFNHZBykuWI3Dr9Ud6t3BOSQxZBxzI3NRdIlMbPrTcVU';
 
 app.get('/webhook', (req, res) => {
     // Validate the webhook subscription challenge
@@ -295,6 +297,19 @@ async function sendMessage(recipientId, messageText) {
     }
 }
 
-app.listen(8081, () => {
+// module.exports = app;
+
+
+app.listen(8081, async () => {
     console.log('Server is running on port 8081');
+    try {
+        const url = await ngrok.connect({
+            addr: 8081, // Port to forward
+            authtoken: "2bL53qyGRNh5MYKxkTj9Ts9XgxN_7kXfK29HmTQfb76wWsun3", // Your ngrok authtoken from environment
+            region: 'aus', // Specify your region
+        });
+        console.log(`Server is publicly accessible at ${url.url()}`);  // Access the URL property
+    } catch (error) {
+        console.error(`Error occurred while trying to connect ngrok: ${error.message}`);
+    }
 });
